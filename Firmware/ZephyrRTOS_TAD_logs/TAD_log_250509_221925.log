@@ -1,0 +1,16 @@
+"Task Aware Debugger for GDB" version 24.9.0 (202407110857)
+Copyright 2016-2023 NXP
+==================================
+22:17:32.445 INFO: [ZephyrRTOS] .config file could not be read [C:\Users\NMB\OneDrive - UAB\UAB\GEI-GEET\4-Quart_GEI_GEET\2-SEM\Microprocessadors_i_Periferics\02-Project\MPiP-Project\Firmware\frdmmcxa153_hello_world\Debug\.config (The system cannot find the file specified)]
+22:17:32.445 INFO: [TadModel] DSF session ID 15 has started.
+22:17:39.930 INFO: [TadState] TAD state changed: DEBUG_STARTED -> DEBUG_INIT_0 (RESUMED, USER_REQUEST)
+22:17:39.937 INFO: [TadState] TAD state changed: DEBUG_INIT_0 -> DEBUG_INIT_1 (SUSPENDED, SIGNAL)
+22:17:41.136 INFO: [TadState] TAD state changed: DEBUG_INIT_1 -> DEBUG_SUSPENDED (RESUMED, USER_REQUEST)
+22:17:41.154 INFO: [TadState] TAD state changed: DEBUG_SUSPENDED -> DEBUG_SUSPENDED (SUSPENDED, BREAKPOINT)
+22:18:44.292 INFO: [TadState] TAD state changed: DEBUG_SUSPENDED -> DEBUG_RESUMED (RESUMED, USER_REQUEST)
+22:18:44.318 INFO: [TadState] TAD state changed: DEBUG_RESUMED -> READY (SUSPENDED, BREAKPOINT)
+22:18:48.732 INFO: [TadState] TAD state changed: READY -> DEBUG_RESUMED (RESUMED, USER_REQUEST)
+22:18:49.04 INFO: [TadState] TAD state changed: DEBUG_RESUMED -> READY (SUSPENDED, BREAKPOINT)
+22:18:53.63 INFO: [TadState] TAD state changed: READY -> DEBUG_RESUMED (RESUMED, USER_REQUEST)
+22:18:53.244 INFO: [TadState] TAD state changed: DEBUG_RESUMED -> READY (SUSPENDED, BREAKPOINT)
+22:19:25.179 INFO: [TadModel] DSF session ID 15 has ended.
