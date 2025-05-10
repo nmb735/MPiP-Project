@@ -10,6 +10,8 @@
 #include "fsl_debug_console.h"
 #include "pin_mux.h"
 #include "board.h"
+#include "alarm.h"
+#include "motor.h"
 
 #include "fsl_clock.h"
 #include "fsl_reset.h"
@@ -36,59 +38,26 @@
 
 int main(void)
 {
-	const int delay = 100000;
+	bool alertFlag = false; // Flag to determine if an alert must be set.
+	alarmLevel alarm = ALARM_LEVEL_NONE; // Level of the alert.
+	uint16_t counter = 0; // Rotation counter, in degrees. Can take the values from 0-360.
+
+	const int delay = 10000000;
+
     /* Init board hardware. */
     BOARD_InitBootPins();
     BOARD_InitBootClocks();
     BOARD_InitDebugConsole();
 
-    PRINTF("hello world.\r\n");
-
-    // Configure RED LED pin as digital output
-    gpio_pin_config_t led_config = {
-        kGPIO_DigitalOutput, 0,  // Start with logic low
-    };
-    GPIO_PinInit(BOARD_INITPINS_RED_LED_GPIO, BOARD_INITPINS_RED_LED_GPIO_PIN, &led_config);
-    GPIO_PinInit(BOARD_INITPINS_YELLOW_LED_GPIO, BOARD_INITPINS_YELLOW_LED_GPIO_PIN, &led_config);
-    GPIO_PinInit(BOARD_INITPINS_GREEN_LED_GPIO, BOARD_INITPINS_GREEN_LED_GPIO_PIN, &led_config);
-    GPIO_PinInit(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN, &led_config);
-    GPIO_PinInit(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN, &led_config);
-    GPIO_PinInit(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN, &led_config);
-    GPIO_PinInit(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN, &led_config);
-
-    GPIO_PortSet(BOARD_INITPINS_RED_LED_GPIO, BOARD_INITPINS_RED_LED_GPIO_PIN_MASK);
-    GPIO_PortSet(BOARD_INITPINS_YELLOW_LED_GPIO, BOARD_INITPINS_YELLOW_LED_GPIO_PIN_MASK);
-    GPIO_PortSet(BOARD_INITPINS_GREEN_LED_GPIO, BOARD_INITPINS_GREEN_LED_GPIO_PIN_MASK);
-    for (volatile int i = 0; i < 1000000; i++) {}  // crude delay
-    GPIO_PortClear(BOARD_INITPINS_RED_LED_GPIO, BOARD_INITPINS_RED_LED_GPIO_PIN_MASK);
-    GPIO_PortClear(BOARD_INITPINS_YELLOW_LED_GPIO, BOARD_INITPINS_YELLOW_LED_GPIO_PIN_MASK);
-    GPIO_PortClear(BOARD_INITPINS_GREEN_LED_GPIO, BOARD_INITPINS_GREEN_LED_GPIO_PIN_MASK);
-    for (volatile int i = 0; i < 1000000; i++) {}  // crude delay
+    InitAlarm();
 
     while (1)
     {
-        GPIO_PortSet(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
-        GPIO_PortClear(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
-        GPIO_PortClear(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
-        GPIO_PortClear(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
-        for (volatile int i = 0; i < delay; i++) {}  // crude delay
-        GPIO_PortSet(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
-		GPIO_PortClear(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
-		GPIO_PortClear(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
-		GPIO_PortClear(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
-		for (volatile int i = 0; i < delay; i++) {}  // crude delay
-        GPIO_PortSet(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
-        GPIO_PortClear(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
-        GPIO_PortClear(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
-        GPIO_PortClear(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
-        for (volatile int i = 0; i < delay; i++) {}  // crude delay
-        GPIO_PortSet(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
-		GPIO_PortClear(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
-		GPIO_PortClear(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
-		GPIO_PortClear(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
-		for (volatile int i = 0; i < delay; i++) {}  // crude delay
-
-
-
+		if (alarm == ALARM_LEVEL_HIGH)
+			alarm = ALARM_LEVEL_NONE;
+		else
+			alarm += 1;
+		UpdateAlarm(alarm);
+		for(volatile int i = 0; i < delay; i++){}
     }
 }

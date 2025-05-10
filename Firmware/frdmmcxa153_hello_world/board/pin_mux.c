@@ -21,6 +21,7 @@ pin_labels:
 - {pin_num: '18', pin_signal: P2_4/CT_INP14/CT1_MAT0, label: IN_3, identifier: IN_3}
 - {pin_num: '19', pin_signal: P2_5/CT_INP15/CT1_MAT1, label: IN_2, identifier: IN_2}
 - {pin_num: '38', pin_signal: P3_12/LPUART2_RTS_B/CT1_MAT2/PWM0_X0, label: IN_1, identifier: IN_1}
+- {pin_num: '16', pin_signal: P2_2/TRIG_IN6/LPUART0_RTS_B/LPUART2_TXD/CT_INP12/CT2_MAT2/ADC0_A4/CMP0_IN0, label: ALARM}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
