@@ -41,6 +41,7 @@ int main(void)
 	bool alertFlag = false; // Flag to determine if an alert must be set.
 	alarmLevel alarm = ALARM_LEVEL_NONE; // Level of the alert.
 	uint16_t counter = 0; // Rotation counter, in degrees. Can take the values from 0-360.
+	uint32_t frequencyHz = 3000; // PWM frequency for buzzer
 
 	const int delay = 10000000;
 
@@ -49,7 +50,7 @@ int main(void)
     BOARD_InitBootClocks();
     BOARD_InitDebugConsole();
 
-    InitAlarm();
+    InitAlarm(frequencyHz);
 
     while (1)
     {
