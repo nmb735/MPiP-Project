@@ -21,6 +21,9 @@ pin_labels:
 - {pin_num: '18', pin_signal: P2_4/CT_INP14/CT1_MAT0, label: IN_3, identifier: IN_3}
 - {pin_num: '19', pin_signal: P2_5/CT_INP15/CT1_MAT1, label: IN_2, identifier: IN_2}
 - {pin_num: '38', pin_signal: P3_12/LPUART2_RTS_B/CT1_MAT2/PWM0_X0, label: IN_1, identifier: IN_1}
+- {pin_num: '16', pin_signal: P2_2/TRIG_IN6/LPUART0_RTS_B/LPUART2_TXD/CT_INP12/CT2_MAT2/ADC0_A4/CMP0_IN0, label: ALARM}
+- {pin_num: '37', pin_signal: P3_13/LPUART2_CTS_B/CT1_MAT3/PWM0_X1, label: BUZZER, identifier: BUZZER}
+- {pin_num: '17', pin_signal: P2_3/WUU0_IN19/TRIG_IN7/LPUART0_CTS_B/LPUART2_RXD/CT_INP13/CT2_MAT3/ADC0_A2/CMP1_IN0, label: BUZZER, identifier: BUZZER}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -60,6 +63,7 @@ BOARD_InitPins:
   - {pin_num: '18', peripheral: GPIO2, signal: 'GPIO, 4', pin_signal: P2_4/CT_INP14/CT1_MAT0, direction: OUTPUT}
   - {pin_num: '19', peripheral: GPIO2, signal: 'GPIO, 5', pin_signal: P2_5/CT_INP15/CT1_MAT1, direction: OUTPUT}
   - {pin_num: '38', peripheral: GPIO3, signal: 'GPIO, 12', pin_signal: P3_12/LPUART2_RTS_B/CT1_MAT2/PWM0_X0, direction: OUTPUT}
+  - {pin_num: '37', peripheral: CTIMER1, signal: 'MATCH, 3', pin_signal: P3_13/LPUART2_CTS_B/CT1_MAT3/PWM0_X1}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -102,6 +106,8 @@ void BOARD_InitPins(void)
     RESET_ReleasePeripheralReset(kPORT2_RST_SHIFT_RSTn);
     /* PORT3 peripheral is released from reset */
     RESET_ReleasePeripheralReset(kPORT3_RST_SHIFT_RSTn);
+    /* CTIMER1 peripheral is released from reset */
+    RESET_ReleasePeripheralReset(kCTIMER1_RST_SHIFT_RSTn);
 
     gpio_pin_config_t GREEN_LED_config = {
         .pinDirection = kGPIO_DigitalOutput,
@@ -266,6 +272,16 @@ void BOARD_InitPins(void)
     PORT_SetPinMux(BOARD_INITPINS_IN_1_PORT, BOARD_INITPINS_IN_1_PIN, kPORT_MuxAlt0);
 
     PORT3->PCR[12] = ((PORT3->PCR[12] &
+                       /* Mask bits to zero which are setting */
+                       (~(PORT_PCR_IBE_MASK)))
+
+                      /* Input Buffer Enable: Enables. */
+                      | PORT_PCR_IBE(PCR_IBE_ibe1));
+
+    /* PORT3_13 (pin 37) is configured as CT1_MAT3 */
+    PORT_SetPinMux(BOARD_INITPINS_BUZZER_PORT, BOARD_INITPINS_BUZZER_PIN, kPORT_MuxAlt4);
+
+    PORT3->PCR[13] = ((PORT3->PCR[13] &
                        /* Mask bits to zero which are setting */
                        (~(PORT_PCR_IBE_MASK)))
 

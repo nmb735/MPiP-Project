@@ -127,6 +127,15 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_IN_1_PIN_MASK (1U << 12U)      /*!<@brief PORT pin mask */
                                                       /* @} */
 
+/*! @name PORT3_13 (number 37), BUZZER
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_BUZZER_PORT PORT3                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_BUZZER_PIN 13U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_BUZZER_PIN_MASK (1U << 13U)      /*!<@brief PORT pin mask */
+                                                        /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

@@ -1,0 +1,45 @@
+/*
+ * motor.c
+ *
+ *  Created on: May 10, 2025
+ *      Author: NMB
+ */
+
+#include "motor.h"
+
+void init_motor(){
+    gpio_pin_config_t led_config = {
+        kGPIO_DigitalOutput, 0,  // Start with logic low
+    };
+    GPIO_PinInit(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN, &led_config);
+    GPIO_PinInit(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN, &led_config);
+    GPIO_PinInit(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN, &led_config);
+    GPIO_PinInit(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN, &led_config);
+}
+
+void rotate_motor(){
+
+	const int delay = 100000;
+
+    GPIO_PortSet(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
+    GPIO_PortClear(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
+    GPIO_PortClear(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
+    GPIO_PortClear(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
+    for (volatile int i = 0; i < delay; i++) {}  // crude delay
+    GPIO_PortSet(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
+	GPIO_PortClear(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
+	GPIO_PortClear(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
+	GPIO_PortClear(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
+	for (volatile int i = 0; i < delay; i++) {}  // crude delay
+    GPIO_PortSet(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
+    GPIO_PortClear(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
+    GPIO_PortClear(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
+    GPIO_PortClear(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
+    for (volatile int i = 0; i < delay; i++) {}  // crude delay
+    GPIO_PortSet(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_GPIO_PIN_MASK);
+	GPIO_PortClear(BOARD_INITPINS_IN_3_GPIO, BOARD_INITPINS_IN_3_GPIO_PIN_MASK);
+	GPIO_PortClear(BOARD_INITPINS_IN_2_GPIO, BOARD_INITPINS_IN_2_GPIO_PIN_MASK);
+	GPIO_PortClear(BOARD_INITPINS_IN_4_GPIO, BOARD_INITPINS_IN_4_GPIO_PIN_MASK);
+	for (volatile int i = 0; i < delay; i++) {}  // crude delay
+}
+
