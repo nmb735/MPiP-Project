@@ -73,23 +73,32 @@ void GPIO_IRQHandler(void)
         GPIO_GpioClearInterruptFlags(HCSR04_ECHO_GPIO, (1U << HCSR04_ECHO_PIN));
     }
 }
+// In your TriggerMeasurement() function:
+
 float TriggerMeasurement(void)
 {
     float distance = 0.0f;
     uint32_t startTime, endTime, pulseDuration;
     uint32_t timeout = 0;
     
+    // Small delay before trigger to let system stabilize
+    SDK_DelayAtLeastUs(5000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    
     /* Send trigger pulse */
     GPIO_PortSet(HCSR04_TRIG_GPIO, HCSR04_TRIG_PIN_MASK);
-    SDK_DelayAtLeastUs(10, CLOCK_GetFreq(kCLOCK_CoreSysClk));  // 10μs trigger
+    SDK_DelayAtLeastUs(15, CLOCK_GetFreq(kCLOCK_CoreSysClk));  // Extended to 15μs trigger
     GPIO_PortClear(HCSR04_TRIG_GPIO, HCSR04_TRIG_PIN_MASK);
+    
+    // Small delay after trigger
+    SDK_DelayAtLeastUs(60, CLOCK_GetFreq(kCLOCK_CoreSysClk));
     
     /* Wait for echo to go high */
     timeout = 0;
     while (GPIO_PinRead(HCSR04_ECHO_GPIO, HCSR04_ECHO_PIN) == 0) {
-        if (++timeout > 30000) {  // Timeout if no response
+        if (++timeout > 60000) {  // Increased timeout
             return MAX_DISTANCE_CM;
         }
+        SDK_DelayAtLeastUs(1, CLOCK_GetFreq(kCLOCK_CoreSysClk)); // Small delay in loop
     }
     
     /* Start timing */
@@ -98,9 +107,10 @@ float TriggerMeasurement(void)
     /* Wait for echo to go low */
     timeout = 0;
     while (GPIO_PinRead(HCSR04_ECHO_GPIO, HCSR04_ECHO_PIN) == 1) {
-        if (++timeout > 30000) {  // Timeout if stuck high
+        if (++timeout > 60000) {  // Increased timeout
             return MAX_DISTANCE_CM;
         }
+        SDK_DelayAtLeastUs(1, CLOCK_GetFreq(kCLOCK_CoreSysClk)); // Small delay in loop
     }
     
     /* End timing */
