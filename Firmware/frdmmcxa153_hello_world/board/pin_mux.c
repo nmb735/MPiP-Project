@@ -24,6 +24,8 @@ pin_labels:
 - {pin_num: '16', pin_signal: P2_2/TRIG_IN6/LPUART0_RTS_B/LPUART2_TXD/CT_INP12/CT2_MAT2/ADC0_A4/CMP0_IN0, label: ALARM}
 - {pin_num: '37', pin_signal: P3_13/LPUART2_CTS_B/CT1_MAT3/PWM0_X1, label: BUZZER, identifier: BUZZER}
 - {pin_num: '17', pin_signal: P2_3/WUU0_IN19/TRIG_IN7/LPUART0_CTS_B/LPUART2_RXD/CT_INP13/CT2_MAT3/ADC0_A2/CMP1_IN0, label: BUZZER, identifier: BUZZER}
+- {pin_num: '35', pin_signal: P3_15/LPUART2_TXD/CT_INP7, label: HCSR04_ECHO, identifier: HCSR04_ECHO}
+- {pin_num: '36', pin_signal: P3_14/WUU0_IN25/LPUART2_RXD/CT_INP6/PWM0_X2, label: HCSR04_TRIG, identifier: HCSR04_TRIG}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -64,6 +66,9 @@ BOARD_InitPins:
   - {pin_num: '19', peripheral: GPIO2, signal: 'GPIO, 5', pin_signal: P2_5/CT_INP15/CT1_MAT1, direction: OUTPUT}
   - {pin_num: '38', peripheral: GPIO3, signal: 'GPIO, 12', pin_signal: P3_12/LPUART2_RTS_B/CT1_MAT2/PWM0_X0, direction: OUTPUT}
   - {pin_num: '37', peripheral: CTIMER1, signal: 'MATCH, 3', pin_signal: P3_13/LPUART2_CTS_B/CT1_MAT3/PWM0_X1}
+  - {pin_num: '35', peripheral: GPIO3, signal: 'GPIO, 15', pin_signal: P3_15/LPUART2_TXD/CT_INP7, direction: INPUT, gpio_per_interrupt: kGPIO_InterruptEitherEdge}
+  - {pin_num: '36', peripheral: GPIO3, signal: 'GPIO, 14', pin_signal: P3_14/WUU0_IN25/LPUART2_RXD/CT_INP6/PWM0_X2, direction: OUTPUT}
+  - {pin_num: '36', peripheral: WUU0, signal: 'P, 25', pin_signal: P3_14/WUU0_IN25/LPUART2_RXD/CT_INP6/PWM0_X2, identifier: ''}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -157,6 +162,23 @@ void BOARD_InitPins(void)
     };
     /* Initialize GPIO functionality on pin PIO3_12 (pin 38)  */
     GPIO_PinInit(BOARD_INITPINS_IN_1_GPIO, BOARD_INITPINS_IN_1_PIN, &IN_1_config);
+
+    gpio_pin_config_t HCSR04_TRIG_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PIO3_14 (pin 36)  */
+    GPIO_PinInit(BOARD_INITPINS_HCSR04_TRIG_GPIO, BOARD_INITPINS_HCSR04_TRIG_PIN, &HCSR04_TRIG_config);
+
+    gpio_pin_config_t HCSR04_ECHO_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PIO3_15 (pin 35)  */
+    GPIO_PinInit(BOARD_INITPINS_HCSR04_ECHO_GPIO, BOARD_INITPINS_HCSR04_ECHO_PIN, &HCSR04_ECHO_config);
+
+    /* Interrupt configuration on GPIO3_15 (pin 35): Interrupt on either edge */
+    GPIO_SetPinInterruptConfig(BOARD_INITPINS_HCSR04_ECHO_GPIO, BOARD_INITPINS_HCSR04_ECHO_PIN, kGPIO_InterruptEitherEdge);
 
     const port_pin_config_t port0_2_pin51_config = {/* Internal pull-up resistor is enabled */
                                                     .pullSelect = kPORT_PullUp,
@@ -282,6 +304,26 @@ void BOARD_InitPins(void)
     PORT_SetPinMux(BOARD_INITPINS_BUZZER_PORT, BOARD_INITPINS_BUZZER_PIN, kPORT_MuxAlt4);
 
     PORT3->PCR[13] = ((PORT3->PCR[13] &
+                       /* Mask bits to zero which are setting */
+                       (~(PORT_PCR_IBE_MASK)))
+
+                      /* Input Buffer Enable: Enables. */
+                      | PORT_PCR_IBE(PCR_IBE_ibe1));
+
+    /* PORT3_14 (pin 36) is configured as P3_14, WUU0_IN25 */
+    PORT_SetPinMux(BOARD_INITPINS_HCSR04_TRIG_PORT, BOARD_INITPINS_HCSR04_TRIG_PIN, kPORT_MuxAlt0);
+
+    PORT3->PCR[14] = ((PORT3->PCR[14] &
+                       /* Mask bits to zero which are setting */
+                       (~(PORT_PCR_IBE_MASK)))
+
+                      /* Input Buffer Enable: Enables. */
+                      | PORT_PCR_IBE(PCR_IBE_ibe1));
+
+    /* PORT3_15 (pin 35) is configured as P3_15 */
+    PORT_SetPinMux(BOARD_INITPINS_HCSR04_ECHO_PORT, BOARD_INITPINS_HCSR04_ECHO_PIN, kPORT_MuxAlt0);
+
+    PORT3->PCR[15] = ((PORT3->PCR[15] &
                        /* Mask bits to zero which are setting */
                        (~(PORT_PCR_IBE_MASK)))
 

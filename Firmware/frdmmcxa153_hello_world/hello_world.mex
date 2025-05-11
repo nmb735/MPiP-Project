@@ -35,6 +35,8 @@
                <pin_label pin_num="16" pin_signal="P2_2/TRIG_IN6/LPUART0_RTS_B/LPUART2_TXD/CT_INP12/CT2_MAT2/ADC0_A4/CMP0_IN0" label="ALARM"/>
                <pin_label pin_num="37" pin_signal="P3_13/LPUART2_CTS_B/CT1_MAT3/PWM0_X1" label="BUZZER" identifier="BUZZER"/>
                <pin_label pin_num="17" pin_signal="P2_3/WUU0_IN19/TRIG_IN7/LPUART0_CTS_B/LPUART2_RXD/CT_INP13/CT2_MAT3/ADC0_A2/CMP1_IN0" label="BUZZER" identifier="BUZZER"/>
+               <pin_label pin_num="35" pin_signal="P3_15/LPUART2_TXD/CT_INP7" label="HCSR04_ECHO" identifier="HCSR04_ECHO"/>
+               <pin_label pin_num="36" pin_signal="P3_14/WUU0_IN25/LPUART2_RXD/CT_INP6/PWM0_X2" label="HCSR04_TRIG" identifier="HCSR04_TRIG"/>
             </pin_labels>
             <external_user_signals>
                <properties/>
@@ -60,6 +62,11 @@
                      </feature>
                   </dependency>
                   <dependency resourceType="Peripheral" resourceId="CTIMER1" description="Peripheral CTIMER1 signals are routed in the Pins Tool, but the peripheral is not initialized in the Peripherals Tool." problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="Peripheral" resourceId="GPIO3" description="Peripheral GPIO3 signals are routed in the Pins Tool, but the peripheral is not initialized in the Peripherals Tool." problem_level="1" source="Pins:BOARD_InitPins">
                      <feature name="initialized" evaluation="equal">
                         <data>true</data>
                      </feature>
@@ -150,6 +157,22 @@
                      </pin_features>
                   </pin>
                   <pin peripheral="CTIMER1" signal="MATCH, 3" pin_num="37" pin_signal="P3_13/LPUART2_CTS_B/CT1_MAT3/PWM0_X1"/>
+                  <pin peripheral="GPIO3" signal="GPIO, 15" pin_num="35" pin_signal="P3_15/LPUART2_TXD/CT_INP7">
+                     <pin_features>
+                        <pin_feature name="direction" value="INPUT"/>
+                        <pin_feature name="gpio_per_interrupt" value="kGPIO_InterruptEitherEdge"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIO3" signal="GPIO, 14" pin_num="36" pin_signal="P3_14/WUU0_IN25/LPUART2_RXD/CT_INP6/PWM0_X2">
+                     <pin_features>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="WUU0" signal="P, 25" pin_num="36" pin_signal="P3_14/WUU0_IN25/LPUART2_RXD/CT_INP6/PWM0_X2">
+                     <pin_features>
+                        <pin_feature name="identifier" value=""/>
+                     </pin_features>
+                  </pin>
                </pins>
             </function>
          </functions_list>
