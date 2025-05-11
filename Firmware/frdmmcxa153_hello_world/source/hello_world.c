@@ -12,6 +12,7 @@
 #include "board.h"
 #include "alarm.h"
 #include "motor.h"
+#include "HC-SR04.h"
 
 #include "fsl_clock.h"
 #include "fsl_reset.h"
@@ -51,6 +52,7 @@ int main(void)
 
     InitAlarm(frequencyHz);
     InitMotor();
+    InitHCSR04();
 
     while (1)
     {
@@ -62,41 +64,24 @@ int main(void)
 
         /* Get current angle and print it */
         counter = GetCurrentAngle();
-        PRINTF("Current angle: %d degrees\r\n", (int)counter);
 
-        /* Determine alarm level based on current angle */
-        if (counter <= 50.0f) {
-            currentAlarm = ALARM_LEVEL_NONE;
-        } else if (counter <= 150.0f) {
-            currentAlarm = ALARM_LEVEL_LOW;
-        } else if (counter <= 250.0f) {
-            currentAlarm = ALARM_LEVEL_MEDIUM;
-        } else if (counter <= 360.0f) {
-            currentAlarm = ALARM_LEVEL_HIGH;
+        /* Trigger measurement and get distance */
+        float distance = TriggerMeasurement();
+
+        /* Determine alarm level based on distance */
+        alarmLevel detectedLevel = GetPresenceLevel(distance);
+
+        /* Update alarm level if presence detected */
+        if (detectedLevel > currentAlarm) {
+            currentAlarm = detectedLevel;
         }
 
-        /* Update alarm if level has changed */
+        PRINTF("Angle: %d degrees, Distance: %d cm, Alarm: %d\r\n", (int)counter, (int)distance, currentAlarm);
+        
+        /* Update alarm system */
         if (alarm != currentAlarm) {
             alarm = currentAlarm;
             UpdateAlarm(alarm);
-
-            /* Print current alarm level for debugging */
-            switch(alarm) {
-                case ALARM_LEVEL_NONE:
-                    PRINTF("Alarm level: NONE\r\n");
-                    break;
-                case ALARM_LEVEL_LOW:
-                    PRINTF("Alarm level: LOW\r\n");
-                    break;
-                case ALARM_LEVEL_MEDIUM:
-                    PRINTF("Alarm level: MEDIUM\r\n");
-                    break;
-                case ALARM_LEVEL_HIGH:
-                    PRINTF("Alarm level: HIGH\r\n");
-                    break;
-            }
         }
-
-        for(volatile int i = 0; i < 1000000; i++){}
     }
 }

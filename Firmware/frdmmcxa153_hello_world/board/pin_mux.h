@@ -136,6 +136,34 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_BUZZER_PIN_MASK (1U << 13U)      /*!<@brief PORT pin mask */
                                                         /* @} */
 
+/*! @name PORT3_15 (number 35), HCSR04_ECHO
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_HCSR04_ECHO_GPIO GPIO3                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_HCSR04_ECHO_GPIO_PIN 15U              /*!<@brief GPIO pin number */
+#define BOARD_INITPINS_HCSR04_ECHO_GPIO_PIN_MASK (1U << 15U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_HCSR04_ECHO_PORT PORT3                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_HCSR04_ECHO_PIN 15U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_HCSR04_ECHO_PIN_MASK (1U << 15U)      /*!<@brief PORT pin mask */
+                                                             /* @} */
+
+/*! @name PORT3_14 (number 36), HCSR04_TRIG
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_HCSR04_TRIG_GPIO GPIO3                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_HCSR04_TRIG_GPIO_PIN 14U              /*!<@brief GPIO pin number */
+#define BOARD_INITPINS_HCSR04_TRIG_GPIO_PIN_MASK (1U << 14U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_HCSR04_TRIG_PORT PORT3                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_HCSR04_TRIG_PIN 14U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_HCSR04_TRIG_PIN_MASK (1U << 14U)      /*!<@brief PORT pin mask */
+                                                             /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *
