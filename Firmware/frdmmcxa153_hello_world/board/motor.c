@@ -107,7 +107,8 @@ float StepMotorOnce(void)
     }
     
     currentStep = (currentStep + 1) % 4;
-    currentAngle += ACTUAL_STEP_ANGLE;
+    //currentAngle += ACTUAL_STEP_ANGLE;
+    currentAngle += (((MOTOR_STEP_ANGLE) / (GEAR_RATIO))*2.0f);
     if (currentAngle >= 360.0f) {
         currentAngle -= 360.0f;
     }

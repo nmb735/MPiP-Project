@@ -96,5 +96,7 @@ int main(void)
                     break;
             }
         }
+
+        for(volatile int i = 0; i < 1000000; i++){}
     }
 }
