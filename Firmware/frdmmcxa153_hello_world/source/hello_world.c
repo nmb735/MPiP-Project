@@ -140,16 +140,22 @@ int main(void)
                 /* Alert message based on threat severity */
                 switch (currentThreat) {
                     case ALARM_LEVEL_HIGH:
+                        PRINTF("-----------------------------------------------------------------------\r\n");
                         PRINTF("CRITICAL ALERT: Intruder detected at %d [deg] - DISTANCE: %dcm \r\n",
                             (int)currentAngle, (int)distance);
+                        PRINTF("-----------------------------------------------------------------------\r\n");
                         break;
                     case ALARM_LEVEL_MEDIUM:
+                        PRINTF("-----------------------------------------------------------------------\r\n");
                         PRINTF("WARNING: Proximity alert at %d [deg] - DISTANCE: %dcm \r\n",
                             (int)currentAngle, (int)distance);
+                        PRINTF("-----------------------------------------------------------------------\r\n");
                         break;
                     case ALARM_LEVEL_LOW:
+                        PRINTF("-----------------------------------------------------------------------\r\n");
                         PRINTF("INFO: Movement detected at %d [deg] - DISTANCE: %dcm\r\n",
                             (int)currentAngle, (int)distance);
+                        PRINTF("-----------------------------------------------------------------------\r\n");
                         break;
                 }
             }
@@ -162,10 +168,14 @@ int main(void)
             if ((alarm > ALARM_LEVEL_NONE) && (!threatDetectedInSector)) {
                 /* No threats detected in this sector - decrease alarm level */
                 alarm--;
+                PRINTF("-----------------------------------------------------------------------\r\n");
                 PRINTF("INFO: No threats detected for 90 degrees - Decreasing alert level to %d\r\n", alarm);
+                PRINTF("-----------------------------------------------------------------------\r\n");
             } else if (threatDetectedInSector) {
                 /* Threats detected - maintain current alarm level */
+                PRINTF("-----------------------------------------------------------------------\r\n");
                 PRINTF("INFO: Threats detected in sector - Maintaining alert level %d\r\n", alarm);
+                PRINTF("-----------------------------------------------------------------------\r\n");
             }
             
             /* Reset tracking variables for the next sector */
