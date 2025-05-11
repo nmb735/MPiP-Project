@@ -6,37 +6,37 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "fsl_device_registers.h"
-#include "fsl_debug_console.h"
-#include "pin_mux.h"
-#include "board.h"
-#include "alarm.h"
-#include "motor.h"
-#include "HC-SR04.h"
 
-#include "fsl_clock.h"
-#include "fsl_reset.h"
-#include <stdbool.h>
-/*******************************************************************************
- * Definitions
- ******************************************************************************/
-#define THRESHOLD_LOW 70.0f
-#define THRESHOLD_MEDIUM 50.0f
-#define THRESHOLD_HIGH 10.0f
+/******************************************************************************/
+/* Includes                                                                   */
+/******************************************************************************/
+#include "fsl_device_registers.h" /*Device Headers.                           */
+#include "fsl_debug_console.h" /* Debug console.                              */
+#include "pin_mux.h" /* Pins.                                                 */
+#include "board.h" /* Development Board.                                      */
+#include "fsl_clock.h" /* Clock.                                              */
+#include "fsl_reset.h" /* Reset.                                              */
+#include <stdbool.h> /* Standard boolean type.                                */
+#include "alarm.h" /*Custom Library: Alarm System (LEDs & Buzzer)             */
+#include "motor.h" /*Custom Library: Motor Control (28BYJ-48 Stepper Motor)   */
+#include "HC-SR04.h" /*Custom Library: HC-SR04 Ultrasonic Sensor              */
+/******************************************************************************/
 
-#define DECREASE_ALARM 90.0f
 
-/*******************************************************************************
- * Prototypes
- ******************************************************************************/
+/******************************************************************************/
+/* Definitions                                                                */
+/******************************************************************************/
+#define THRESHOLD_LOW    70.0f // Distance [cm] - Sets alarm level LOW        */
+#define THRESHOLD_MEDIUM 50.0f // Distance [cm] - Sets alarm level MEDIUM     */
+#define THRESHOLD_HIGH   10.0f // Distance [cm] - Sets alarm level HIGH       */
+#define DECREASE_ALARM   90.0f // Degrees [deg] - Decrease threshold.         */
+#define PWM_BASE_FREQ    3000U // Frequency [Hz] - Buzzer base frequency.     */    
+/******************************************************************************/
 
-/*******************************************************************************
- * Variables
- ******************************************************************************/
 
-/*******************************************************************************
- * Code
- ******************************************************************************/
+/******************************************************************************/
+/* Code                                                                       */
+/******************************************************************************/
 /*!
  * @brief Main function
  */
@@ -54,7 +54,7 @@ int main(void)
     BOARD_InitBootPins();
     BOARD_InitBootClocks();
     BOARD_InitDebugConsole();
-    InitAlarm(3000);  // 3kHz alarm frequency
+    InitAlarm(PWM_BASE_FREQ);  // 3kHz alarm frequency
     InitMotor();
     InitHCSR04();
     ClearAlarmLevel();
@@ -143,30 +143,6 @@ int main(void)
         }
         
         UpdateAlarm(alarm);
-
-        // Alert messages based on threat level
-//        if ((currentThreat > ALARM_LEVEL_NONE)) {
-//            switch (currentThreat) {
-//                case ALARM_LEVEL_HIGH:
-//                    PRINTF("CRITICAL ALERT: Intruder detected at %d [deg] - DISTANCE: %dcm \r\n",
-//                        (int)currentAngle, (int)distance);
-//                    break;
-//                case ALARM_LEVEL_MEDIUM:
-//                    PRINTF("WARNING: Proximity alert at %d [deg] - DISTANCE: %dcm \r\n",
-//                        (int)currentAngle, (int)distance);
-//                    break;
-//                case ALARM_LEVEL_LOW:
-//                    PRINTF("INFO: Movement detected at %d [deg] - DISTANCE: %dcm\r\n",
-//                        (int)currentAngle, (int)distance);
-//                    break;
-//            }
-//        }
-
-        // Periodic status at cardinal directions
-//        if ((int)currentAngle == 0 || (int)currentAngle == 90 ||
-//            (int)currentAngle == 180 || (int)currentAngle == 270) {
-//            PRINTF("INFO: Position: %d [deg] | Range: %dcm | Alert Level: %d\r\n",
-//                (int)currentAngle, (int)distance, alarm);
-//        }
     }
 }
+/******************************************************************************/
