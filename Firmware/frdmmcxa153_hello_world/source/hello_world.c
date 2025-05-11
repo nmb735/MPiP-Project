@@ -38,12 +38,11 @@
 
 int main(void)
 {
-	bool alertFlag = false; // Flag to determine if an alert must be set.
-	alarmLevel alarm = ALARM_LEVEL_NONE; // Level of the alert.
-	uint16_t counter = 0; // Rotation counter, in degrees. Can take the values from 0-360.
-	uint32_t frequencyHz = 3000; // PWM frequency for buzzer
-
-	const int delay = 10000000;
+    bool alertFlag = false;           // Flag to determine if an alert must be set.
+    alarmLevel alarm = ALARM_LEVEL_NONE; // Level of the alert.
+    float counter = 0;                // Rotation counter, in degrees. Can take the values from 0-360.
+    uint32_t frequencyHz = 3000;      // PWM frequency for buzzer
+    alarmLevel currentAlarm = ALARM_LEVEL_NONE;
 
     /* Init board hardware. */
     BOARD_InitBootPins();
@@ -51,14 +50,53 @@ int main(void)
     BOARD_InitDebugConsole();
 
     InitAlarm(frequencyHz);
+    InitMotor();
 
     while (1)
     {
-		if (alarm == ALARM_LEVEL_HIGH)
-			alarm = ALARM_LEVEL_NONE;
-		else
-			alarm += 1;
-		UpdateAlarm(alarm);
-		for(volatile int i = 0; i < delay; i++){}
+        /* Rotate one degree */
+        RotateOneDegree();
+
+        /* Wait for rotation to complete */
+        //SDK_DelayAtLeastUs(100000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
+        /* Get current angle and print it */
+        counter = GetCurrentAngle();
+        PRINTF("Current angle: %d degrees\r\n", (int)counter);
+
+        /* Determine alarm level based on current angle */
+        if (counter <= 50.0f) {
+            currentAlarm = ALARM_LEVEL_NONE;
+        } else if (counter <= 150.0f) {
+            currentAlarm = ALARM_LEVEL_LOW;
+        } else if (counter <= 250.0f) {
+            currentAlarm = ALARM_LEVEL_MEDIUM;
+        } else if (counter <= 360.0f) {
+            currentAlarm = ALARM_LEVEL_HIGH;
+        }
+
+        /* Update alarm if level has changed */
+        if (alarm != currentAlarm) {
+            alarm = currentAlarm;
+            UpdateAlarm(alarm);
+
+            /* Print current alarm level for debugging */
+            switch(alarm) {
+                case ALARM_LEVEL_NONE:
+                    PRINTF("Alarm level: NONE\r\n");
+                    break;
+                case ALARM_LEVEL_LOW:
+                    PRINTF("Alarm level: LOW\r\n");
+                    break;
+                case ALARM_LEVEL_MEDIUM:
+                    PRINTF("Alarm level: MEDIUM\r\n");
+                    break;
+                case ALARM_LEVEL_HIGH:
+                    PRINTF("Alarm level: HIGH\r\n");
+                    break;
+            }
+        }
+
+        for(volatile int i = 0; i < 1000000; i++){}
     }
 }

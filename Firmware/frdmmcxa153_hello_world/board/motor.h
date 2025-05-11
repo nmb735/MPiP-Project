@@ -18,9 +18,10 @@
 #include "fsl_reset.h"
 #include <stdbool.h>
 
-void init_motor();
-void rotate_motor();
-
-
+void InitMotor(void);
+float StepMotorOnce(void);
+void RotateDegrees(float degrees);
+void RotateOneDegree(void);
+float GetCurrentAngle(void);
 
 #endif /* MOTOR_H_ */
