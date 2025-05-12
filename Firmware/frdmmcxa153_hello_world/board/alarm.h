@@ -35,6 +35,8 @@
 #define CTIMER_MAT_RESET        kCTIMER_Match_0 /* Timer reset match channel  */
 #define CTIMER_MAT_OUT_BUZZER   kCTIMER_Match_3 /* Buzzer output channel      */
 #define CTIMER_CLK_FREQ         CLOCK_GetCTimerClkFreq(1U) /* Timer frequency */
+#define ALARM_FREQ_MEDIUM       21800U
+#define ALARM_FREQ_HIGH         15000U
 /* PWM channel definition                                                     */
 #ifndef CTIMER_MAT_PWM_PERIOD_CHANNEL											
 #define CTIMER_MAT_PWM_PERIOD_CHANNEL kCTIMER_Match_0 /* Default period channel */
@@ -96,7 +98,7 @@ void ClearAlarmLevel(void);
  * @brief Set buzzer intensity via duty cycle
  * @param dutyCycle PWM duty cycle (0-100%)
  */
-void SetBuzzerIntensity(uint8_t dutyCycle);
+void SetBuzzerIntensity(uint32_t dutyCycle);
 
 /**
  * @brief Disable buzzer output
