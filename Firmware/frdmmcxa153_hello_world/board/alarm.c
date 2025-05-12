@@ -123,7 +123,7 @@ void SetAlarmLevelMedium(){
     GPIO_PortClear(BOARD_INITPINS_YELLOW_LED_GPIO, BOARD_INITPINS_YELLOW_LED_GPIO_PIN_MASK);
     GPIO_PortClear(BOARD_INITPINS_GREEN_LED_GPIO, BOARD_INITPINS_GREEN_LED_GPIO_PIN_MASK);
     GPIO_PortSet(BOARD_INITPINS_RED_LED_GPIO, BOARD_INITPINS_RED_LED_GPIO_PIN_MASK);
-	SetBuzzerIntensity(1);
+	SetBuzzerIntensity(ALARM_FREQ_MEDIUM);
 }
 
 /**
@@ -133,7 +133,7 @@ void SetAlarmLevelHigh(){
     GPIO_PortSet(BOARD_INITPINS_RED_LED_GPIO, BOARD_INITPINS_RED_LED_GPIO_PIN_MASK);
     GPIO_PortSet(BOARD_INITPINS_YELLOW_LED_GPIO, BOARD_INITPINS_YELLOW_LED_GPIO_PIN_MASK);
     GPIO_PortClear(BOARD_INITPINS_GREEN_LED_GPIO, BOARD_INITPINS_GREEN_LED_GPIO_PIN_MASK);
-	SetBuzzerIntensity(90);
+	SetBuzzerIntensity(ALARM_FREQ_HIGH);
 }
 
 /**
@@ -152,16 +152,15 @@ void ClearAlarmLevel(){
  *
  * @param dutyCycle PWM duty cycle percentage (0-100)
  */
-void SetBuzzerIntensity(uint8_t dutyCycle) {
-    /*Get PWM period from Match 0*/ 
-    uint32_t period = CTIMER->MR[CTIMER_MAT_PWM_PERIOD_CHANNEL];
+void SetBuzzerIntensity(uint32_t frequency) {
+
     
     /*Calculate match value based on duty cycle (0-100%)*/
-    uint32_t matchValue = period - ((period * dutyCycle) / 100);
+    uint32_t matchValue = CTIMER_CLK_FREQ / frequency;
     
     /*Configure PWM for Match 2 (buzzer output)*/
     ctimer_match_config_t matchConfig;
-    matchConfig.enableCounterReset = false;
+    matchConfig.enableCounterReset = true;
     matchConfig.enableCounterStop = false;
     matchConfig.matchValue = matchValue;
     matchConfig.outControl = kCTIMER_Output_Toggle;
